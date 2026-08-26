@@ -1,5 +1,7 @@
 # Wiki Knowledge Agent
 
+**🌐 [한국어 문서 (Korean README)](README.ko.md)**
+
 Turn chat-pasted text/links into a **verified, translated, searchable** wiki knowledge base. Works on any agent platform (Hermes, Claude Code, Codex, Cursor) with **zero external dependencies** — just `curl` + Python stdlib.
 
 - 🔎 **Verify** links on arrival (HTTP status, redirects) and classify content
