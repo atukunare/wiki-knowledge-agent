@@ -113,23 +113,40 @@ alert_on:
    - Output: label + one-line reason
    │
    ▼
-3. TRANSLATE + SUMMARIZE (LLM)
+3. PRE-SAVE FEEDBACK (LLM — before saving, add value from what you already know)
+   a) Project/context match: if the content relates to anything you know about
+      the user (their projects, goals, interests, past notes), say so in one line:
+      "📌 이거 <프로젝트>에 유용하겠네요" / "📌 This looks useful for <project>"
+   b) Date/event cue: if the content has a date-related element (holiday, birthday,
+      anniversary, deadline, event) and you know the relevant date, offer ONE question:
+      "📅 <이벤트>(<날짜>) <N>일 전에 알려줄까요?" / "📅 <event> is in <N> days — remind you?"
+      - If the user says yes → record it (e.g. add to config important_dates, or note it)
+      - If unsure of the exact date → don't guess; skip the offer
+   c) Keep it light: at most ONE feedback line + ONE date offer. Never block saving on it.
+   │
+   ▼
+4. TRANSLATE + SUMMARIZE (LLM)
    - Foreign content → target_language
    - ≤5-line summary + 3–5 key points
    - If already in target_language, summarize only
    │
    ▼
-4. SAVE (script: scripts/ingest.py --save ...)
+5. SAVE (script: scripts/ingest.py --save ...)
    - <wiki_root>/knowledge/inbox/YYYY-MM-DD-<topic>.md
    - Frontmatter: date, source_url, source_channel, classification (ad/useful), language
    - Tag: related project or "일반"
    │
    ▼
-5. ALERT? (LLM decides against alert_on rules + script: scripts/ingest.py --notify)
+6. ALERT? (LLM decides against alert_on rules + script: scripts/ingest.py --notify)
    - If alert-worthy → append to <wiki_root>/alerts/notifications.md
      + CLI output "[알림] …" + optional webhook/email
    - Else → silent save; reply "✅ 인박스: <file>"
 ```
+
+> **Note on reminders**: the skill itself stays light — the PRE-SAVE FEEDBACK step is
+> LLM reasoning only (no code). If the user wants automated day-before reminders, use
+> your platform's native scheduling (cron / scheduled messages / agent reminders);
+> this skill just makes the *offer* and records the date.
 
 ### Ingest script usage
 
