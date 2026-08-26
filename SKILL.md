@@ -1,18 +1,37 @@
 ---
 name: wiki-knowledge-agent
-description: "Turn chat-pasted text/links into a verified, translated, searchable wiki knowledge base. When a user pastes a link or text (in ANY channel — Discord, Slack, CLI, etc.), fetch+verify it, classify it (useful vs ad), translate+summarize it into the target language, save it to the wiki, and optionally alert on time-sensitive information. Also acts as a RAG channel: agents search the wiki for prior knowledge. Use whenever the user pastes content for archiving, asks to save a link/bookmark, asks '알림 있어?', or asks the agent to look up knowledge saved in the wiki."
+description: "Turn chat-pasted text/links into a verified, translated, searchable wiki knowledge base. When a user pastes a link or text (in ANY channel — Discord, Slack, CLI, etc.), fetch+verify it, classify it (useful vs ad), translate+summarize it into the target language, save it to the wiki, and optionally alert on time-sensitive information. Also acts as a RAG channel: agents search the wiki for prior knowledge. Use whenever the user pastes content for archiving, asks to save a link/bookmark, asks '알림 있어?', 'any alerts?', or asks the agent to look up knowledge saved in the wiki."
 category: note-taking
 triggers:
+  # English
+  - "save this"
+  - "save this link"
+  - "bookmark"
+  - "bookmark this"
+  - "add to wiki"
+  - "remember this"
+  - "archive this"
+  - "store this"
+  - "clip this"
+  - "note this"
+  - "paste this"
+  - "wiki"
+  - "knowledge base"
+  - "any alerts?"
+  - "check alerts"
+  - "notifications"
+  - "save for later"
+  # 한국어
   - "북마크"
-  - "위키에 저장"
   - "링크 저장"
+  - "링크 저장해줘"
+  - "저장해줘"
+  - "위키에 저장"
+  - "위키에 넣어줘"
   - "붙여넣기 정리"
   - "인박스"
   - "알림 있어?"
-  - "save this link"
-  - "bookmark"
-  - "wiki"
-  - "저장해줘"
+  - "알림 확인"
 ---
 
 # Wiki Knowledge Agent
