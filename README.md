@@ -33,6 +33,37 @@ Optional: `pyyaml` for config read/write (falls back to a minimal parser/writer 
 python3 scripts/onboarding.py
 ```
 
+### Install per agent (skill folder locations)
+
+| Agent | Install location | Notes |
+|-------|------------------|-------|
+| **Claude Code** | `~/.claude/skills/wiki-knowledge-agent/` | Auto-detected on session start |
+| **Hermes** | `~/.hermes/profiles/<profile>/skills/note-taking/wiki-knowledge-agent/` | Recognized from the *next* session |
+| **Codex CLI** | Add a rule to your `AGENTS.md` pointing at the skill, plus copy the folder under `~/.codex/` | Codex may not auto-scan skill folders — reference it in AGENTS.md |
+| **Cursor** | `~/.cursor/skills/wiki-knowledge-agent/` (or project `.cursor/rules`) | Check your Cursor version's skill folder path |
+
+Example install for Claude Code:
+
+```bash
+git clone https://github.com/atukunare/wiki-knowledge-agent.git
+mkdir -p ~/.claude/skills/wiki-knowledge-agent
+cp -R wiki-knowledge-agent/SKILL.md wiki-knowledge-agent/scripts \
+      wiki-knowledge-agent/references wiki-knowledge-agent/templates \
+      ~/.claude/skills/wiki-knowledge-agent/
+```
+
+### Troubleshooting — "the agent says it doesn't have this skill"
+
+- **Hermes / Claude Code / Cursor**: verify the SKILL.md is inside the correct skills folder (paths above). Skills are usually scanned at session start — **restart the session** after installing.
+- **Codex CLI**: it does not auto-scan skill folders in all versions. Add a line to `AGENTS.md`:
+  ```markdown
+  ## Wiki saves
+  Use the wiki-knowledge-agent skill at ~/.codex/skills/wiki-knowledge-agent/SKILL.md
+  when the user asks to save/archive a link or text.
+  ```
+- **Still not found?** Check the folder name matches the skill name (`wiki-knowledge-agent`), and that `SKILL.md` sits directly in that folder (not nested). Then re-run onboarding (`python3 scripts/onboarding.py`) and confirm `~/.config/wiki-knowledge-agent/config.yaml` exists.
+- The scripts themselves don't need the agent to find them — you can also call `python3 scripts/ingest.py --verify <url>` directly from a terminal; only the *classification/translation* step requires an LLM that has read SKILL.md.
+
 Onboarding asks:
 1. **Wiki root path** → default `~/wiki`
 2. **Input channels** → `any`, or a specific list (discord/slack/…); if you pick nothing, the **current chat** becomes the default — but content pasted into *other* channels is still judged and saved

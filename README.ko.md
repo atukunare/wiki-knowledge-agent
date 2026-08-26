@@ -31,6 +31,37 @@
 python3 scripts/onboarding.py
 ```
 
+### 에이전트별 설치 위치 (스킬 폴더)
+
+| 에이전트 | 설치 위치 | 비고 |
+|---------|-----------|------|
+| **Claude Code** | `~/.claude/skills/wiki-knowledge-agent/` | 세션 시작 시 자동 인식 |
+| **Hermes** | `~/.hermes/profiles/<프로필>/skills/note-taking/wiki-knowledge-agent/` | **다음 세션부터** 인식 |
+| **Codex CLI** | 스킬 폴더를 `~/.codex/`에 복사 + `AGENTS.md`에 규칙 추가 | Codex는 스킬 폴더를 자동 스캔하지 않을 수 있음 — AGENTS.md에서 참조 필요 |
+| **Cursor** | `~/.cursor/skills/wiki-knowledge-agent/` (또는 프로젝트 `.cursor/rules`) | Cursor 버전별 스킬 폴더 경로 확인 |
+
+Claude Code 설치 예시:
+
+```bash
+git clone https://github.com/atukunare/wiki-knowledge-agent.git
+mkdir -p ~/.claude/skills/wiki-knowledge-agent
+cp -R wiki-knowledge-agent/SKILL.md wiki-knowledge-agent/scripts \
+      wiki-knowledge-agent/references wiki-knowledge-agent/templates \
+      ~/.claude/skills/wiki-knowledge-agent/
+```
+
+### 문제 해결 — "에이전트가 이 스킬 없다고 해요"
+
+- **Hermes / Claude Code / Cursor**: SKILL.md가 위 표의 올바른 스킬 폴더에 있는지 확인하세요. 스킬은 보통 **세션 시작 시** 스캔되므로 설치 후 **세션을 재시작**해야 합니다.
+- **Codex CLI**: 일부 버전은 스킬 폴더를 자동 스캔하지 않습니다. `AGENTS.md`에 규칙을 추가하세요:
+  ```markdown
+  ## 위키 저장
+  사용자가 링크/텍스트 저장을 요청하면
+  ~/.codex/skills/wiki-knowledge-agent/SKILL.md 의 wiki-knowledge-agent 스킬을 사용한다.
+  ```
+- **그래도 못 찾으면?** 폴더 이름이 스킬 이름(`wiki-knowledge-agent`)과 일치하는지, `SKILL.md`가 폴더 바로 아래(중첩 없이) 있는지 확인하세요. 그 다음 온보딩 재실행(`python3 scripts/onboarding.py`) 후 `~/.config/wiki-knowledge-agent/config.yaml` 생성 여부를 확인하세요.
+- 스크립트는 에이전트가 찾지 못해도 터미널에서 직접 실행할 수 있습니다: `python3 scripts/ingest.py --verify <url>` — *분류/번역* 단계만 SKILL.md를 읽은 LLM이 필요합니다.
+
 온보딩 질문 4가지:
 1. **위키 루트 경로** → 기본 `~/wiki`
 2. **입력 채널** → `any` 또는 특정 목록(discord/slack/…); 선택하지 않으면 **현재 채팅창**이 기본 — 다른 채널에 실수로 붙여넣어도 **판단해서 저장**
