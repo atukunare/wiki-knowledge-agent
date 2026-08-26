@@ -17,19 +17,22 @@ import sys
 import pathlib
 import yaml  # optional; falls back to a simple writer if missing
 
+CONFIG_ENV = "WIKI_AGENT_CONFIG"
 DEFAULT_CONFIG_DIR = pathlib.Path.home() / ".config" / "wiki-knowledge-agent"
-DEFAULT_CONFIG = DEFAULT_CONFIG_DIR / "config.yaml"
+DEFAULT_CONFIG = pathlib.Path(os.environ.get(CONFIG_ENV, DEFAULT_CONFIG_DIR / "config.yaml"))
 
 KNOWN_PLATFORMS = ["discord", "slack", "weixin", "telegram", "whatsapp", "cli", "web"]
 
 
 def ask(question: str, default: str = "") -> str:
     suffix = f" [{default}]" if default else ""
+    print(f"{question}{suffix}: ", end="", flush=True)
     try:
-        val = input(f"{question}{suffix}: ").strip()
+        val = input().strip()
     except (EOFError, KeyboardInterrupt):
         print("\n[onboarding aborted]")
         sys.exit(1)
+    print()  # newline after the answer, keeps prompts on separate lines
     return val if val else default
 
 
