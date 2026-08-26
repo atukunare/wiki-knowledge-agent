@@ -1,0 +1,16 @@
+# Config & secrets — never commit
+config.yaml
+*.local.yaml
+
+# Local runtime state
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS junk
+.DS_Store
+
+# Alerts/knowledge are user data, not repo content
+alerts/
+knowledge/

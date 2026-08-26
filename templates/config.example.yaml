@@ -1,0 +1,43 @@
+# wiki-knowledge-agent — full config reference
+
+# Wiki root where all knowledge/alerts live
+wiki_root: "~/wiki"
+
+# Target language for translation of foreign content
+target_language: "ko"
+
+# Whether to translate foreign content (false = keep original + summarize in target language)
+translate: true
+
+# ---- Input ----
+input:
+  # "any" = every channel/CLI. Or list specific platforms, e.g. ["discord", "slack"].
+  # Content pasted into ANY channel is always judged & saved; this only controls
+  # what the agent listens to by default.
+  sources: ["any"]
+  # Onboarding default when the user doesn't pick: the current chat.
+  default_channel: "current"
+
+# ---- Notifications ----
+notify:
+  # Tier 0: always save locally + print in chat. Required.
+  tier0: true
+  # Optional Tier 1 integrations. Empty = disabled. Add later anytime by asking
+  # the model to update config (e.g. "알림 채널 추가해줘").
+  webhook: ""        # Slack/Discord/Telegram incoming webhook URL
+  email: ""          # SMTP DSN, e.g. smtp://user:pass@host:587
+  ntfy_topic: ""     # ntfy.sh topic, e.g. "my-topic" (POST https://ntfy.sh/my-topic)
+
+# ---- Alert triggers ----
+alert_on:
+  security: true         # security issues, leaked secrets, CVE mentions
+  account_expiry: true   # API key / domain / subscription expiry
+  project_risk: true     # competitive shifts, policy changes affecting a project
+  interest: false        # general interests (noisy; off by default)
+
+# ---- Storage layout (derived from wiki_root) ----
+# <wiki_root>/knowledge/inbox/YYYY-MM-DD-<topic>.md   — raw collected notes
+# <wiki_root>/knowledge/<topic>.md                    — integrated knowledge
+# <wiki_root>/alerts/notifications.md                 — alert queue (Tier 0)
+# <wiki_root>/alerts/archive/                         — cleared alerts
+# <wiki_root>/knowledge-base-map.md                   — RAG inventory (topic → file)
