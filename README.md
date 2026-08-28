@@ -29,7 +29,7 @@ OpenHuman and other big harnesses build entire apps to solve this. This skill so
 ## Demo — a real flow
 
 ```
-You:  "ave this Chuseok gift list for me"  (paste a gift-guide link)
+You:  "save this Chuseok gift list for me"  (paste a gift-guide link)
 
 Agent (before saving):
   📌 This looks useful for our project — you can use it as material for social content.
