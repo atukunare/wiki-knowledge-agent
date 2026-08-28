@@ -2,35 +2,64 @@
 
 **🌐 [한국어 문서 (Korean README)](README.ko.md)**
 
-Turn chat-pasted text/links into a **verified, translated, searchable** wiki knowledge base. Works on any agent platform (Hermes, Claude Code, Codex, Cursor) with **zero external dependencies** — just `curl` + Python stdlib.
+> ## 🧠 Your AI forgets. A wiki doesn't.
+>
+> **Wiki Knowledge Agent** turns chat-pasted text and links into a **verified, translated, searchable** wiki knowledge base — a persistent brain for any agent. Works on Claude Code, Codex, Cursor, and Hermes with **zero external dependencies**.
 
-- 🔎 **Verify** links on arrival (HTTP status, redirects) and classify content
-- 📢 **Ad detection** — labels pure ads vs. genuinely useful info (no auto-deletion, provenance kept)
-- 🌐 **Translate + summarize** into your language (default: the user's native language)
-- 🗂️ **Save** to a wiki inbox with structured metadata
-- 🔔 **Local-first alerts** — time-sensitive info (security, expiry, project risk) is queued locally and reported in chat; optional webhook/email/ntfy if you add them later
-- 📚 **RAG-ready** — agents search the wiki as a knowledge channel, with an auto-maintained topic→file map
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/)
+[![Zero deps](https://img.shields.io/badge/dependencies-zero-orange.svg)]()
 
-## Why
+---
 
-Many people paste links/text into chat and expect the AI to remember them. Agents forget; wikis don't. This skill gives agents a **repeatable procedure** for capturing, judging, translating, storing, and surfacing knowledge — on any platform, with no SaaS account required.
+## Why this exists
 
-## Requirements
+You paste a link into chat and expect your AI to remember it. **Agents forget — wikis don't.**
 
-- Python 3.9+
-- `curl` (for link verification)
-- A model that can follow the SKILL.md instructions (any capable LLM agent)
+OpenHuman and other big harnesses build entire apps to solve this. This skill solves the *essential* part in ~50KB: a repeatable procedure any agent can follow, on any platform, with nothing to install beyond `curl` + Python.
 
-Optional: `pyyaml` for config read/write (falls back to a minimal parser/writer without it).
+## What it does — 3 moves
+
+| | Move | What happens |
+|---|------|--------------|
+| 🔎 | **Verify** | Links are checked on arrival (HTTP status, redirects). Ads are separated from genuinely useful content. |
+| 🌐 | **Remember** | Content is translated & summarized into your language, then saved to your wiki as a distilled note. |
+| 🔔 | **Nudge** | Time-sensitive items (security, expiry, project risk) land in a local alert queue — plus it offers to remind you before holidays, birthdays, and deadlines. |
+
+## Demo — a real flow
+
+```
+You:  "추석 선물 리스트 이거 저장해줘"  (paste a gift-guide link)
+
+Agent (before saving):
+  📌 이거 Yubook 프로젝트에 유용하겠네요 — 소셜 콘텐츠 소재로 쓸 수 있어요
+  📅 추석(9/29)이 한 달도 안 남았는데, 일주일 전에 알려줄까요?
+You:  "응"
+
+Result:
+  ✅ Saved to wiki/knowledge/inbox/2026-08-26-chuseok-gifts.md
+  📅 Reminder registered — your agent (or its native scheduler) nudges you on 9/22
+```
+
+The save never waits on the feedback — the note is stored instantly, the offer is a bonus.
+
+## Why zero dependencies matters
+
+- **No npm install, no pip install, no SaaS account.** Just clone, copy the folder, and run one onboarding command.
+- Works with a **single model** or a fleet of agents — no multi-agent setup required.
+- Alerts are **local-first**: no webhook, no email app? You still get the alert in your chat. Add Slack/Discord/Telegram/ntfy later, anytime.
 
 ## Quickstart
 
 ```bash
-# 1. Clone / copy this repo into your agent's skills directory
-#    (or load SKILL.md into your agent's skill folder)
+# 1. Clone
+git clone https://github.com/atukunare/wiki-knowledge-agent.git
 
-# 2. Run onboarding to create the config
+# 2. Onboarding (4 questions, defaults are fine)
+cd wiki-knowledge-agent
 python3 scripts/onboarding.py
+
+# 3. Use it — paste any link/text into chat and say "save this"
 ```
 
 ### Install per agent (skill folder locations)
@@ -41,16 +70,6 @@ python3 scripts/onboarding.py
 | **Hermes** | `~/.hermes/profiles/<profile>/skills/note-taking/wiki-knowledge-agent/` | Recognized from the *next* session |
 | **Codex CLI** | Add a rule to your `AGENTS.md` pointing at the skill, plus copy the folder under `~/.codex/` | Codex may not auto-scan skill folders — reference it in AGENTS.md |
 | **Cursor** | `~/.cursor/skills/wiki-knowledge-agent/` (or project `.cursor/rules`) | Check your Cursor version's skill folder path |
-
-Example install for Claude Code:
-
-```bash
-git clone https://github.com/atukunare/wiki-knowledge-agent.git
-mkdir -p ~/.claude/skills/wiki-knowledge-agent
-cp -R wiki-knowledge-agent/SKILL.md wiki-knowledge-agent/scripts \
-      wiki-knowledge-agent/references wiki-knowledge-agent/templates \
-      ~/.claude/skills/wiki-knowledge-agent/
-```
 
 ### Troubleshooting — "the agent says it doesn't have this skill"
 
@@ -64,17 +83,11 @@ cp -R wiki-knowledge-agent/SKILL.md wiki-knowledge-agent/scripts \
 - **Still not found?** Check the folder name matches the skill name (`wiki-knowledge-agent`), and that `SKILL.md` sits directly in that folder (not nested). Then re-run onboarding (`python3 scripts/onboarding.py`) and confirm `~/.config/wiki-knowledge-agent/config.yaml` exists.
 - The scripts themselves don't need the agent to find them — you can also call `python3 scripts/ingest.py --verify <url>` directly from a terminal; only the *classification/translation* step requires an LLM that has read SKILL.md.
 
-Onboarding asks:
-1. **Wiki root path** → default `~/wiki`
-2. **Input channels** → `any`, or a specific list (discord/slack/…); if you pick nothing, the **current chat** becomes the default — but content pasted into *other* channels is still judged and saved
-3. **Target language** → default `ko` (change to your native language)
-4. **Alert channel** → optional webhook/email; without one, alerts go to the local queue + current chat. **Add alerts later anytime**: just tell the model *"알림 채널 추가해줘"* — it updates the config.
-
 ## Usage
 
 ### Ingest (when content arrives in chat)
 
-The model follows SKILL.md: verify → classify → translate/summarize → save → maybe alert.
+The model follows SKILL.md: verify → classify → pre-save feedback → translate/summarize → save → maybe alert.
 
 Script helpers:
 
@@ -143,6 +156,12 @@ alert_on:
 - [SKILL.md](SKILL.md) — the agent-facing procedure (load this into your agent)
 - [references/ad-detection.md](references/ad-detection.md) — ad-vs-useful classification guide with worked examples
 - [templates/config.example.yaml](templates/config.example.yaml) — full config reference
+
+## Community
+
+- Report bugs / request features: [Issues](https://github.com/atukunare/wiki-knowledge-agent/issues)
+- Discussions: [GitHub Discussions](https://github.com/atukunare/wiki-knowledge-agent/discussions)
+- Contributing: [CONTRIBUTING.md](CONTRIBUTING.md) · [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 
 ## License
 

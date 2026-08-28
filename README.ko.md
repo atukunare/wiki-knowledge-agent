@@ -1,34 +1,63 @@
 # Wiki Knowledge Agent
 
-채팅에 붙여넣은 텍스트/링크를 **검증·번역·검색 가능한 위키 지식 베이스**로 바꿔주는 스킬입니다. 모든 에이전트 플랫폼(Hermes, Claude Code, Codex, Cursor)에서 **외부 의존성 없이** 동작합니다 — `curl` + Python 표준 라이브러리만 있으면 됩니다.
+> ## 🧠 에이전트는 잊습니다. 위키는 잊지 않습니다.
+>
+> **Wiki Knowledge Agent**는 채팅에 붙여넣은 텍스트/링크를 **검증·번역·검색 가능한 위키 지식 베이스**로 바꿔주는 스킬입니다 — 어떤 에이전트에도 붙일 수 있는 영구 기억. Claude Code, Codex, Cursor, Hermes 어디서든 **외부 의존성 없이** 동작합니다.
 
-- 🔎 **도착 즉시 검증** — 링크 HTTP 상태/리다이렉트 확인, 내용 판별
-- 📢 **광고 판별** — 순수 광고와 진짜 유용한 정보를 구분 (자동 삭제 안 함, 출처 보존)
-- 🌐 **번역 + 요약** — 내 언어로 (기본: 사용자 모국어)
-- 🗂️ **위키에 저장** — 구조화된 메타데이터와 함께 인박스에 보관
-- 🔔 **로컬 우선 알림** — 시급한 정보(보안·만료·프로젝트 리스크)는 로컬 큐 + 채팅으로 보고, 필요 시 웹훅/이메일/ntfy도 추가 가능
-- 📚 **RAG 준비** — 에이전트가 위키를 지식 채널로 검색, 주제→파일 맵 자동 유지
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/)
+[![Zero deps](https://img.shields.io/badge/dependencies-zero-orange.svg)]()
+
+---
 
 ## 왜 필요한가
 
-사람들은 링크/텍스트를 채팅에 붙여넣고 AI가 기억해주길 기대합니다. 에이전트는 잊지만 위키는 잊지 않습니다. 이 스킬은 에이전트에게 **수집 → 판별 → 번역 → 저장 → 알림**의 반복 가능한 절차를 제공합니다. 플랫폼 무관, SaaS 계정 불필요.
+링크를 채팅에 붙여넣고 AI가 기억해주길 기대합니다. **에이전트는 잊지만 위키는 잊지 않습니다.**
 
-## 요구 사항
+OpenHuman 같은 거대 하네스는 이 문제를 위해 전체 앱을 만듭니다. 이 스킬은 **꼭 필요한 핵심만 ~50KB**로 해결합니다 — 어떤 에이전트든 따라 할 수 있는 반복 가능한 절차, `curl` + Python 외에 설치할 것 없는.
 
-- Python 3.9+
-- `curl` (링크 검증용)
-- SKILL.md 지침을 따를 수 있는 LLM 에이전트
+## 무엇을 하는가 — 3가지 동작
 
-선택: `pyyaml` (config 읽기/쓰기 — 없으면 최소 파서/라이터로 폴백)
+| | 동작 | 내용 |
+|---|------|------|
+| 🔎 | **검증 (Verify)** | 링크 도착 즉시 확인 (HTTP 상태/리다이렉트). 광고와 진짜 유용한 정보를 분리. |
+| 🌐 | **기억 (Remember)** | 콘텐츠를 내 언어로 번역·요약해 위키에 요약 노트로 저장. |
+| 🔔 | **알림 (Nudge)** | 시급한 항목(보안/만료/리스크)은 로컬 알림 큐에 — 그리고 명절·생일·마감 전에 미리 알려줄지 제안. |
+
+## 데모 — 실제 흐름
+
+```
+사용자:  "추석 선물 리스트 이거 저장해줘"  (선물 가이드 링크 붙여넣기)
+
+에이전트 (저장 전에):
+  📌 이거 Yubook 프로젝트에 유용하겠네요 — 소셜 콘텐츠 소재로 쓸 수 있어요
+  📅 추석(9/29)이 한 달도 안 남았는데, 일주일 전에 알려줄까요?
+사용자:  "응"
+
+결과:
+  ✅ 저장 완료: wiki/knowledge/inbox/2026-08-26-chuseok-gifts.md
+  📅 리마인더 등록 — 에이전트(또는 플랫폼 자체 스케줄러)가 9/22에 알림
+```
+
+저장은 피드백을 기다리지 않습니다 — 노트는 즉시 저장되고, 제안은 보너스입니다.
+
+## 왜 제로 의존성인가
+
+- **npm install도, pip install도, SaaS 계정도 없습니다.** 클론 → 폴더 복사 → 온보딩 1회면 끝.
+- **단일 모델** 또는 에이전트 무리 — 멀티 에이전트 설정 불필요.
+- 알림은 **로컬 우선**: 웹훅도 이메일 앱도 없어도 채팅에서 알림을 받습니다. Slack/Discord/Telegram/ntfy는 나중에 언제든 추가.
 
 ## 빠른 시작
 
 ```bash
-# 1. 클론 또는 스킬 폴더로 복사
-#    (에이전트의 skills 디렉토리에 SKILL.md를 넣어도 됨)
+# 1. 클론
+git clone https://github.com/atukunare/wiki-knowledge-agent.git
 
-# 2. 온보딩 실행 (config 생성)
+# 2. 온보딩 (4문항 — 기본값으로 충분)
+cd wiki-knowledge-agent
 python3 scripts/onboarding.py
+
+# 3. 사용 — 채팅에 링크/텍스트 붙여넣고 "저장해줘"
 ```
 
 ### 에이전트별 설치 위치 (스킬 폴더)
@@ -39,16 +68,6 @@ python3 scripts/onboarding.py
 | **Hermes** | `~/.hermes/profiles/<프로필>/skills/note-taking/wiki-knowledge-agent/` | **다음 세션부터** 인식 |
 | **Codex CLI** | 스킬 폴더를 `~/.codex/`에 복사 + `AGENTS.md`에 규칙 추가 | Codex는 스킬 폴더를 자동 스캔하지 않을 수 있음 — AGENTS.md에서 참조 필요 |
 | **Cursor** | `~/.cursor/skills/wiki-knowledge-agent/` (또는 프로젝트 `.cursor/rules`) | Cursor 버전별 스킬 폴더 경로 확인 |
-
-Claude Code 설치 예시:
-
-```bash
-git clone https://github.com/atukunare/wiki-knowledge-agent.git
-mkdir -p ~/.claude/skills/wiki-knowledge-agent
-cp -R wiki-knowledge-agent/SKILL.md wiki-knowledge-agent/scripts \
-      wiki-knowledge-agent/references wiki-knowledge-agent/templates \
-      ~/.claude/skills/wiki-knowledge-agent/
-```
 
 ### 문제 해결 — "에이전트가 이 스킬 없다고 해요"
 
@@ -62,17 +81,11 @@ cp -R wiki-knowledge-agent/SKILL.md wiki-knowledge-agent/scripts \
 - **그래도 못 찾으면?** 폴더 이름이 스킬 이름(`wiki-knowledge-agent`)과 일치하는지, `SKILL.md`가 폴더 바로 아래(중첩 없이) 있는지 확인하세요. 그 다음 온보딩 재실행(`python3 scripts/onboarding.py`) 후 `~/.config/wiki-knowledge-agent/config.yaml` 생성 여부를 확인하세요.
 - 스크립트는 에이전트가 찾지 못해도 터미널에서 직접 실행할 수 있습니다: `python3 scripts/ingest.py --verify <url>` — *분류/번역* 단계만 SKILL.md를 읽은 LLM이 필요합니다.
 
-온보딩 질문 4가지:
-1. **위키 루트 경로** → 기본 `~/wiki`
-2. **입력 채널** → `any` 또는 특정 목록(discord/slack/…); 선택하지 않으면 **현재 채팅창**이 기본 — 다른 채널에 실수로 붙여넣어도 **판단해서 저장**
-3. **번역 언어** → 기본 `ko` (모국어로 변경)
-4. **알림 채널** → 선택: 웹훅/이메일; 없으면 로컬 큐 + 현재 채팅창으로. **나중에 언제든 추가 가능**: 모델에게 *"알림 채널 추가해줘"* 라고 말하면 config를 업데이트합니다.
-
 ## 사용법
 
 ### 수집 (채팅에 내용이 도착하면)
 
-모델이 SKILL.md를 따라: 검증 → 판별 → 번역/요약 → 저장 → (필요시) 알림.
+모델이 SKILL.md를 따라: 검증 → 판별 → 저장 전 피드백 → 번역/요약 → 저장 → (필요시) 알림.
 
 스크립트 보조:
 
@@ -142,6 +155,12 @@ alert_on:
 - [references/ad-detection.md](references/ad-detection.md) — 광고 vs 유용 정보 판별 가이드 (실전 예시)
 - [templates/config.example.yaml](templates/config.example.yaml) — 전체 설정 레퍼런스
 - [README.md](README.md) — English
+
+## 커뮤니티
+
+- 버그 신고 / 기능 요청: [Issues](https://github.com/atukunare/wiki-knowledge-agent/issues)
+- 토론: [GitHub Discussions](https://github.com/atukunare/wiki-knowledge-agent/discussions)
+- 기여: [CONTRIBUTING.md](CONTRIBUTING.md) · [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 
 ## 라이선스
 
