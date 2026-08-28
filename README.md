@@ -29,12 +29,12 @@ OpenHuman and other big harnesses build entire apps to solve this. This skill so
 ## Demo — a real flow
 
 ```
-You:  "추석 선물 리스트 이거 저장해줘"  (paste a gift-guide link)
+You:  "ave this Chuseok gift list for me"  (paste a gift-guide link)
 
 Agent (before saving):
-  📌 이거 Yubook 프로젝트에 유용하겠네요 — 소셜 콘텐츠 소재로 쓸 수 있어요
-  📅 추석(9/29)이 한 달도 안 남았는데, 일주일 전에 알려줄까요?
-You:  "응"
+  📌 This looks useful for our project — you can use it as material for social content.
+  📅 Chuseok (9/29) is less than a month away, would you like me to remind you a week before?
+You:  "sure"
 
 Result:
   ✅ Saved to wiki/knowledge/inbox/2026-08-26-chuseok-gifts.md
