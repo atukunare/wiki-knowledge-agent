@@ -162,6 +162,15 @@ alert_on:
 - 토론: [GitHub Discussions](https://github.com/atukunare/wiki-knowledge-agent/discussions)
 - 기여: [CONTRIBUTING.md](CONTRIBUTING.md) · [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 
+## Grok Bot (X) — 커뮤니티 템플릿
+
+이 스킬을 X 기반 AI 팀원으로 쓰고 싶나요? 커뮤니티 그록봇 템플릿 **Ywiky**가 동일한 절차(검증 → 광고/유용 판별 → 한 줄 맥락 → 요약 → 저장)를 따릅니다:
+
+- **봇 링크:** https://x.ai/bot/ODzi9HX2HOreEdk2cBCNG
+- **사용법:** Grok Bot 앱(데스크톱/iOS) 설치 → 링크 열기 → "Add to Grok Bot" 클릭 → 채팅에 링크/텍스트 붙여넣기.
+
+> 참고: Grok Bot은 원격 X 에이전트라 자체 메모리 공간을 쓰며 로컬 `~/wiki` 파일은 읽을 수 없습니다. 로컬 파일 위키가 필요하면 위의 스킬 폴더 설치를 사용하세요. 직접 봇을 만들려면 Grok Bot 앱에서 봇을 생성하고 [SKILL.md](SKILL.md)의 절차를 봇 설명에 붙여넣으면 됩니다.
+
 ## 라이선스
 
 MIT

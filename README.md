@@ -163,6 +163,15 @@ alert_on:
 - Discussions: [GitHub Discussions](https://github.com/atukunare/wiki-knowledge-agent/discussions)
 - Contributing: [CONTRIBUTING.md](CONTRIBUTING.md) · [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 
+## Grok Bot (X) — community template
+
+Want this skill as an X-based AI teammate? A community Grok Bot template called **Ywiky** follows the same procedure (verify → label ad/useful → one-line context → summarize → save):
+
+- **Bot link:** https://x.ai/bot/ODzi9HX2HOreEdk2cBCNG
+- **How to use:** install Grok Bot (desktop/iOS), open the link, click "Add to Grok Bot", then paste links/text into the chat.
+
+> Note: Grok Bot is a remote X agent — it keeps its own memory space and can't read your local `~/wiki` files. For a local-file wiki, use the skill folder install above. To make your own bot, create one in the Grok Bot app and paste the procedure from [SKILL.md](SKILL.md) into its description.
+
 ## License
 
 MIT
