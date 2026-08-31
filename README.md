@@ -2,14 +2,18 @@
 
 **🌐 [한국어 문서 (Korean README)](README.ko.md)**
 
+
 > ## 🧠 Your AI forgets. A wiki doesn't.
+>
+> 
 >
 > **Wiki Knowledge Agent** turns chat-pasted text and links into a **verified, translated, searchable** wiki knowledge base — a persistent brain for any agent. Works on Claude Code, Codex, Cursor, and Hermes with **zero external dependencies**.
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/)
-[![Zero deps](https://img.shields.io/badge/dependencies-zero-orange.svg)]()
-
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License: MIT"></a>
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.9+-blue.svg" alt="Python 3.9+"></a>
+  <img src="https://img.shields.io/badge/dependencies-zero-orange.svg" alt="Zero deps">
+</p>
 ---
 
 ## Why this exists
